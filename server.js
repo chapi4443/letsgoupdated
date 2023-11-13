@@ -20,9 +20,9 @@ const reviewRouter = require("./Hotel_booking/reviewRoutes.js");
 const orderRouter= require("./Hotel_booking/orderRoutes.js");
 const hotelamadeusRouter = require("./HotelAmadeus/hotelamadeusRoutes.js");
 const Payment = require("./Payment/paymentRoutes.js")
-
-
-// const paymentRouter = require ('./Payment/paymentRoutes.js')
+const flightRapid = require("./FlightRapid/flightRapidRoutes")
+const Meta = require("./Meta/metaRoutes")
+const HotelRapid = require("./Hotel_rapid/HotelrapidRoutes.js")
 
 //middleware
 const {logger,logEvents}=require('./middleware/logger.js')
@@ -62,6 +62,9 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/amadeushotel", hotelamadeusRouter);
 app.use("/api/v1/Payment", Payment);
+app.use("/api/v1/meta", Meta);
+app.use("/api/v1/flightrapid",flightRapid)
+
 
 
 app.use(notFoundMiddleware);

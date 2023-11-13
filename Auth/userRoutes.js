@@ -10,8 +10,11 @@ const {
   showCurrentUser,
   updateUser,
   updateUserPassword,
-  deleteUser
-} = require('./userController.js');
+  deleteUser,
+  editProfilePicture,
+  deleteProfilePicture,
+  createProfilePicture,
+} = require("./userController.js");
 
 router
   .route('/')
@@ -25,5 +28,14 @@ router.delete('/:id', authenticateUser, authorizePermissions('admin'), deleteUse
 
 
 router.route('/:id').get(authenticateUser, getSingleUser);
+
+// Route for editing profile picture
+router.patch("/editProfilePicture", editProfilePicture);
+
+// Route for deleting profile picture
+router.delete("/deleteProfilePicture",  deleteProfilePicture);
+
+// Route for creating a profile picture
+router.post("/createProfilePicture",  createProfilePicture);
 
 module.exports = router;
