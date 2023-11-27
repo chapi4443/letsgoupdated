@@ -138,9 +138,109 @@ async function getFlightDetails(token, currencyCode) {
   }
 }
 
+async function getMinPrice(req, res) {
+  try {
+    const { fromId, toId, departDate, currencyCode } = req.query;
+
+    // Validate required parameters
+    if (!fromId || !toId || !departDate) {
+      return res.status(400).json({ error: "All parameters are required" });
+    }
+
+    // Build params object
+    const params = {
+      fromId,
+      toId,
+      departDate,
+      returnDate,
+      currency_code: currencyCode,
+    };
+
+    const options = {
+      method: "GET",
+      url: "https://booking-com15.p.rapidapi.com/api/v1/flights/getMinPrice",
+      params,
+      ...rapidAPIOptions,
+    };
+
+    const response = await axios.request(options);
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get minimum flight price" });
+  }
+}
+async function getMinPriceMultiStops(req, res) {
+  try {
+    const { legs, cabinClass, currencyCode } = req.query;
+
+    // Validate required parameters
+    if (!legs || !cabinClass) {
+      return res
+        .status(400)
+        .json({ error: "legs and cabinClass parameters are required" });
+    }
+
+    const params = {
+      legs,
+      cabinClass,
+      currency_code: currencyCode,
+    };
+
+    const options = {
+      method: "GET",
+      url: "https://booking-com15.p.rapidapi.com/api/v1/flights/getMinPriceMultiStops",
+      params,
+      ...rapidAPIOptions,
+    };
+
+    const response = await axios.request(options);
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to get minimum flight price for multiple stops" });
+  }
+}
+async function getSeatMap(req, res) {
+  try {
+    const { offerToken, currencyCode } = req.query;
+
+    // Validate required parameters
+    if (!offerToken) {
+      return res.status(400).json({ error: "Offer token is required" });
+    }
+
+    const params = {
+      offerToken,
+      currency_code: currencyCode,
+    };
+
+    const options = {
+      method: "GET",
+      url: "https://booking-com15.p.rapidapi.com/api/v1/flights/getSeatMap",
+      params,
+      ...rapidAPIOptions,
+    };
+
+    const response = await axios.request(options);
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get seat map" });
+  }
+}
+
+
+
+
 module.exports = {
   searchDestination,
   searchFlights,
   searchFlightsMultiStops,
-  getFlightDetails
+  getFlightDetails,
+  getSeatMap,
+  getMinPrice,
+  getMinPriceMultiStops,
 };

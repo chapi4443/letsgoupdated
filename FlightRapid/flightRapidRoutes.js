@@ -44,4 +44,36 @@ router.get("/get-flight-details", async (req, res) => {
     res.status(500).json({ error: "Failed to get flight details" });
   }
 });
+router.get("/getminpricemultistops", async (req, res) => {
+  try {
+    await flightController.getMinPriceMultiStops(req, res);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to get minimum flight price for multiple stops" });
+  }
+});
+
+router.get("/getminprice", async (req, res) => {
+  try {
+    await flightController.getMinPrice(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get minimum flight price" });
+  }
+});
+
+
+router.get("/getseatmap", async (req, res) => {
+  try {
+    await flightController.getSeatMap(req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get seat map" });
+  }
+});
+
+
+
 module.exports = router;
