@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const flightController = require("./flightRapidController");
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require("../middleware/authentication");
 
 // Define a route to search for destinations
 router.get("/search-destination", async (req, res) => {
@@ -24,26 +28,9 @@ router.get("/search-flights-multi-stops", async (req, res) => {
 });
 
 
-router.get("/get-flight-details", async (req, res) => {
-  try {
-    const { token, currencyCode } = req.query;
+router.get("/get-flight-details",authenticateUser, flightController.getFlightDetails);
 
-    // Validate required parameters
-    if (!token) {
-      return res
-        .status(400)
-        .json({ error: "Token required" });
-    }
 
-    const flightDetails = await flightController.getFlightDetails(
-      token,
-      currencyCode
-    );
-    res.json(flightDetails);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get flight details" });
-  }
-});
 router.get("/getminpricemultistops", async (req, res) => {
   try {
     await flightController.getMinPriceMultiStops(req, res);
