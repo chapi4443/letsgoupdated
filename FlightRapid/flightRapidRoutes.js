@@ -29,6 +29,11 @@ router.get("/search-flights-multi-stops", async (req, res) => {
 
 
 router.get("/get-flight-details",authenticateUser, flightController.getFlightDetails);
+router.get(
+  "/getall-flight-details",
+ [ authenticateUser,authorizePermissions("admin")]
+ , flightController.getAllFlightDetails
+);
 
 
 router.get("/getminpricemultistops", async (req, res) => {

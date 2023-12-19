@@ -11,7 +11,7 @@ const {
 router.get(
   "/city-and-airport-search/:parameter",controllers.cityAndAirportSearch
 );
-router.get('/flight-search', controllers.flightSearch);
+router.get('/flight-search',authenticateUser, controllers.flightSearch);
 router.post(
   "/flight-confirmation",
   authenticateUser,

@@ -28,7 +28,18 @@ const authorizePermissions = (...roles) => {
   };
 };
 
+const authorizePermissions1 = (...api_permission) => {
+  return (req, res, next) => {
+    if (!api_permission.includes(req.user.api_permission)) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to access this action " });
+    }
+    next();
+  };
+};
 module.exports = {
   authenticateUser,
   authorizePermissions,
+  authorizePermissions1
 };

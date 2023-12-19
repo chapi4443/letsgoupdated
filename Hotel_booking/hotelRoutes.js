@@ -21,7 +21,6 @@ router.route("/").post([authenticateUser], createServices).get(getAllServices);
 router
   .route("/uploadImage")
   .post(
-    [authenticateUser, authorizePermissions("admin", "serviceprovider")],
     uploadImage
   );
 

@@ -101,11 +101,9 @@ async function searchFlightsMultiStops(req, res) {
     res.status(500).json({ error: "Failed to search for multi-stop flights" });
   }
 }
-
 async function getFlightDetails(req, res) {
   try {
     const { token } = req.query;
-    console.log(req.query);
 
     // Validate required parameters
     if (!token) {
@@ -115,14 +113,12 @@ async function getFlightDetails(req, res) {
     // Assuming you have user information in req.user after authentication
     const userId = req.user.userId;
 
-    console.log(userId);
-
     // Check if flight details for the given token already exist in the database
     let flightDetails = await FlightDetails.findOne({ token });
 
     if (!flightDetails) {
       // If not, fetch flight details from the API
-      const params = {    
+      const params = {
         token,
         // currency_code: currencyCode,
       };
@@ -131,36 +127,106 @@ async function getFlightDetails(req, res) {
         method: "GET",
         url: "https://booking-com15.p.rapidapi.com/api/v1/flights/getFlightDetails",
         params,
-        ...rapidAPIOptions,
+        ...rapidAPIOptions, 
       };
 
       const response = await axios.request(options);
 
-      if (response.data) {
-        // Save flight details to the database
-        flightDetails = new FlightDetails({
-          userId,
-          token,
-          ...response.data, // Include all data from the API response
-        });
+      // Save flight details to the database
+      flightDetails = new FlightDetails({
+        userId,
+        token,
+        apiResponse: response.data, // Save the entire API response
+      });
 
-        await flightDetails.save();
-      } else {
-        throw new Error("Invalid API response format");
-      }
+      await flightDetails.save();
     }
 
-    // You can access the flight details and user information here
+    // You can access the flight details, user information, and API response here
     console.log("Flight details:", flightDetails);
     console.log("User ID:", userId);
 
     // Continue with your existing code to return the flight details to the client
     res.json({ flightDetails });
   } catch (error) {
-    console.error(error); // Log the entire error object for debugging
+    console.error(error); // Log the actual error for debugging
     res.status(500).json({ error: "Failed to get flight details" });
   }
 }
+
+
+async function getAllFlightDetails(req, res) {
+  try {
+    // Retrieve all flight details from the database
+    const allFlightDetails = await FlightDetails.find();
+
+    // You can access the flight details here
+    console.log("All Flight details:", allFlightDetails);
+
+    // Return the flight details to the client
+    res.json({ allFlightDetails });
+  } catch (error) {
+    console.error(error); // Log the actual error for debugging
+    res.status(500).json({ error: "Failed to get all flight details" });
+  }
+}
+// async function getFlightDetails(req, res) {
+//   try {
+//     const { token } = req.query;
+//     console.log(req.query);
+
+//     // Validate required parameters
+//     if (!token) {
+//       throw new Error("Token is required");
+//     }
+
+//     // Assuming you have user information in req.user after authentication
+//     const userId = req.user.userId;
+
+//     console.log(userId);
+
+//     // Check if flight details for the given token already exist in the database
+//     let flightDetails = await FlightDetails.findOne({ token });
+
+//     if (!flightDetails) {
+//       // If not, fetch flight details from the API
+//       const params = {
+//         token,
+//         // currency_code: currencyCode,
+//       };
+
+//       const options = { 
+//         method: "GET",
+//         url: "https://booking-com15.p.rapidapi.com/api/v1/flights/getFlightDetails",
+//         params,
+//         ...rapidAPIOptions,
+//       };
+
+//       const response = await axios.request(options);
+
+//       // Save flight details to the database
+//       flightDetails = new FlightDetails({
+//         userId,
+//         token,
+//         ...response.data, // Include all data from the API response
+//       });
+
+//       await flightDetails.save();
+//     }
+
+//     // You can access the flight details and user information here
+//     console.log("Flight details:", flightDetails);
+//     console.log("User ID:", userId);
+
+//     // Continue with your existing code to return the flight details to the client
+//     res.json({ flightDetails });
+//   } catch (error) {
+//     console.error(error); // Log the actual error for debugging
+//     res.status(500).json({ error: "Failed to get flight details" });
+//   }
+// }
+
+
 async function getMinPrice(req, res) {
   try {
     const { fromId, toId, departDate, currencyCode, returnDate } = req.query;
@@ -260,7 +326,8 @@ module.exports = {
   searchFlights,
   searchFlightsMultiStops,
   getFlightDetails,
-  getSeatMap,
   getMinPrice,
   getMinPriceMultiStops,
+  getSeatMap,
+  getAllFlightDetails
 };
